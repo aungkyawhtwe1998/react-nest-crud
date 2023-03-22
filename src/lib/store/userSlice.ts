@@ -1,4 +1,4 @@
-import { CompanyState } from "./../types";
+import { CompanyState, LocationType } from "./../types";
 
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
@@ -9,6 +9,7 @@ export interface UserState {
   isAdmin: boolean;
   id: number | null;
   company: CompanyState;
+  location: LocationType;
 }
 const initialState: UserState = {
   email: "",
@@ -26,6 +27,10 @@ const initialState: UserState = {
     currency: "",
     coverPhoto: "",
   },
+  location: {
+    id:null,
+    name: "",
+  }
 };
 export const userSlice = createSlice({
   name: "user",
@@ -37,12 +42,14 @@ export const userSlice = createSlice({
         email: string;
         isAdmin: boolean;
         company: CompanyState;
+        location: LocationType;
       }>
     ) => {
       state.email = action.payload.email;
       state.isAdmin = action.payload.isAdmin;
       state.auth = true;
       state.company = action.payload.company;
+      state.location = action.payload.location;
     },
 
     updateCompany: (state, action: PayloadAction<CompanyState>) => {

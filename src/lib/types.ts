@@ -9,3 +9,7 @@ export interface CompanyState {
     coverPhoto?: string,
 }
 
+export interface LocationType{
+    id?: number | null;
+    name: string;
+}

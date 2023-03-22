@@ -2,18 +2,20 @@ import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../lib/hooks/useAuth";
 import { useMutation } from "react-query";
+import useSnackBar from "../lib/hooks/useSnackBar";
 const Login = () => {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
   const { handleLogin } = useAuth();
+  const {openSnackBar} = useSnackBar();
   
   const mutation = useMutation(handleLogin, {
     onSuccess: () => {
-      alert("Successfully logged in");
-      navigate("/profile");
+      openSnackBar('Successfullly Logged in');
+      navigate("/dashboard");
     },
     onError: (err: any) => {
-      alert(err.msg || "Try again later");
+      openSnackBar(err.message || 'Unexpected error. Try again later');
     },
   });
 
@@ -35,7 +37,7 @@ const Login = () => {
           />
           Signin
         </a> */}
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div className="w-full bg-lime-900 rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
               <span> Sign in to your account</span>

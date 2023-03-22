@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import useAuth from "./lib/hooks/useAuth";
 import { isExpired } from "react-jwt";
 import { Routes, Route } from "react-router-dom";
@@ -7,11 +7,16 @@ import { loggedIn, loggedOut } from "./lib/store/userSlice";
 import ProtectedRoute from "./components/utils/ProtectedRoute";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
-import Signup from "./pages/signup";
-const Profile = lazy(() => import("./pages/Profile"));
+import Signup from "./pages/Signup";
+import { Snackbar } from "@mui/material";
+import useSnackBar from "./lib/hooks/useSnackBar";
+import FallbackLoading from "./components/FallBackLoading";
+import Dashboard from "./pages/dashboard";
+const Settings = lazy(() => import("./pages/dashboard/settings"));
 export default () => {
   const dispatch = useDispatch();
   const { handleLogout } = useAuth();
+  const { showSnackBar, snackBarText } = useSnackBar();
 
   useEffect(() => {
     if (typeof window !== undefined) {
@@ -39,28 +44,36 @@ export default () => {
 
   return (
     <>
-      <Routes>
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-        <Route
-          path="/signup"
-          element={<Signup />}
-        />
+      <Snackbar
+        anchorOrigin={{ horizontal: "right", vertical: "top" }}
+        open={showSnackBar}
+        autoHideDuration={3000}
+        message={snackBarText}
+      />
+      <Suspense fallback={<FallbackLoading />}>
+        <Routes>
+          <Route
+            path="/login"
+            element={<Login />}
+          />
+          <Route
+            path="/signup"
+            element={<Signup />}
+          />
 
-        <Route
-          path="/"
-          element={<Home />}></Route>
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+          <Route
+            path="/"
+            element={<Home />}></Route>
+          <Route
+            path="/dashboard/*"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Suspense>
     </>
   );
 };

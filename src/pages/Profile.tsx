@@ -7,9 +7,13 @@ import { Label } from "@mui/icons-material";
 import { useMutation } from "react-query";
 import { postData, updateData } from "../lib/fetcher";
 import { updateCompany } from "../lib/store/userSlice";
+import useSnackBar from "../lib/hooks/useSnackBar";
+import useConfirmDialog from "../lib/hooks/useConfirmDialog";
+import ConfirmDialog from "../components/utils/ConfirmDialog";
 
 const Profile = () => {
   const company = useSelector((state: RootState) => state.userReducer.company);
+  console.log('company',company)
   const dispatch = useDispatch();
   const [companyInfo, setCompanyInfo] = useState<CompanyState>({
     id: company?.id || null,
@@ -21,6 +25,19 @@ const Profile = () => {
     serviceChargeRate: company?.serviceChargeRate || null,
     taxRate: company.taxRate || null,
   });
+
+  const [openFormDialog, setOpenFormDialog] = useState<{
+    open: boolean;
+    type: string;
+    data: { _id?: string; name?: string; year?: string };
+  }>({
+    open: false,
+    type: "create",
+    data: { _id: "", name: "", year: "" },
+  });
+  const { openSnackBar } = useSnackBar();
+  const { showConfirmDialog, openConfirmDialog } = useConfirmDialog();
+
   const onSubmit = (e: FormEvent) => {
     e.preventDefault();
     console.log(company?.id);
@@ -37,16 +54,22 @@ const Profile = () => {
         })
       ),
     onSuccess: () => {
-      dispatch(updateCompany(companyInfo))
-      alert("You have successfully updated the company");
+      dispatch(updateCompany(companyInfo));
+      setOpenFormDialog({
+        open: true,
+        type: "create",
+        data: { _id: "", name: "", year: "" },
+      });
+      openSnackBar("You have successfully updated the company");
     },
     onError: (error: any) => {
-      console.log(error, "error");
-      alert(error?.message || "Something went wrong");
+      openSnackBar(error?.message || "Something went wrong");
     },
   });
   return (
     <section>
+      <ConfirmDialog open={showConfirmDialog} />
+
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">

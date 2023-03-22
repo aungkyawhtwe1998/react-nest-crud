@@ -3,6 +3,7 @@ import React from "react";
 import { signUpValidate } from "../lib/validate";
 import { useMutation } from "react-query";
 import useAuth from "../lib/hooks/useAuth";
+import useSnackBar from "../lib/hooks/useSnackBar";
 type Value = {
     username: string;
     email: string;
@@ -11,7 +12,7 @@ type Value = {
   };
 const Signup = () => {
     const { handleSignup } = useAuth();
-
+    const {openSnackBar} = useSnackBar();
     const onSubmit = async (values: Value) => {
         // e.preventDefault();
         mutation.mutate(values);
@@ -19,10 +20,10 @@ const Signup = () => {
 
     const mutation = useMutation(handleSignup, {
         onSuccess: () => {
-          alert("Successfully registered in");
+          openSnackBar("Successfully registered in");
         },
         onError: (err: any) => {
-          alert(err.msg || "Try again later");
+          openSnackBar(err.message || 'Try again later')
         },
       });
   

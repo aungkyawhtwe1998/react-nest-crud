@@ -1,32 +1,34 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-import './App.css'
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-import { BrowserRouter as Router } from 'react-router-dom';
-import Routes from './Routes'
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { Provider } from 'react-redux';
-import { store } from './lib/store';
-import { ThemeProvider, createTheme } from '@mui/material';
+import "./App.css";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import { BrowserRouter as Router } from "react-router-dom";
+import Routes from "./Routes";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { Provider } from "react-redux";
+import { store } from "./lib/store";
+import { ThemeProvider, createTheme } from "@mui/material";
+import { ProSidebarProvider } from "react-pro-sidebar";
+
 const theme = createTheme({
   typography: {
     fontFamily: "Roboto",
   },
   palette: {
     primary: {
-      main: "#fe0005",
+      main: "#52796f",
     },
     secondary: {
-      main: "#0044ff",
+      main: "#84a98c",
     },
     success: {
-      main: "#00FF7F",
+      main: "#a3b18a",
     },
     error: {
-      main: "#fff",
+      main: "#cad2c5",
     },
 
     contrastThreshold: 3,
@@ -34,23 +36,27 @@ const theme = createTheme({
   },
 });
 function App() {
-
-
   const queryClient = new QueryClient();
   return (
     <div className="App">
       <QueryClientProvider client={queryClient}>
         <Provider store={store}>
-          <ThemeProvider theme ={ theme }>
-            <Router>
-              <Routes/>
-            </Router>
+          {/* <PersistGate
+            loading={null}
+            persistor={persistor}>
+            
+          </PersistGate> */}
+          <ThemeProvider theme={theme}>
+            <ProSidebarProvider>
+              <Router>
+                <Routes />
+              </Router>
+            </ProSidebarProvider>
           </ThemeProvider>
         </Provider>
       </QueryClientProvider>
-      
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
